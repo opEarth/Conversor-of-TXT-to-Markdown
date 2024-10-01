@@ -32,7 +32,7 @@ def atualizar_previsualizacao():
 def gravar_markdown():
     caminho_md = filedialog.asksaveasfilename(defaultextension=".md", filetypes=[("Markdown", "*.md")])
     if caminho_md:
-        with open(caminho_md, 'w') as f_md:
+        with open(caminho_md, 'w', encoding='utf-8') as f_md:  # Grava em UTF-8
             f_md.write(converter_para_markdown())  # Grava o conteúdo convertido para Markdown
         messagebox.showinfo("Sucesso", "Ficheiro Markdown gravado com sucesso!")
 
@@ -46,9 +46,12 @@ def converter_para_markdown():
     if not os.path.exists(caminho_txt):
         return "Erro: O ficheiro de texto não foi encontrado."
 
-    # Leitura do ficheiro .txt
-    with open(caminho_txt, 'r') as f_txt:
-        conteudo_txt = f_txt.read()
+    # Tenta ler o ficheiro .txt em UTF-8
+    try:
+        with open(caminho_txt, 'r', encoding='utf-8') as f_txt:
+            conteudo_txt = f_txt.read()
+    except UnicodeDecodeError:
+        return "Erro: Não foi possível decodificar o ficheiro de texto. Verifique a codificação."
 
     # Formata o conteúdo em Markdown
     conteudo_md = f"# Conteúdo do Ficheiro\n\n{conteudo_txt}\n\n"
